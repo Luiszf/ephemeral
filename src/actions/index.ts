@@ -43,6 +43,9 @@ fs.readFile('servidor/server.properties', 'utf8', (err, data) => {
 		if (i + 1 < split.length) {
 
 			let option = split[i]
+			if (option[0] == "#") {
+				continue
+			}
 			if (option.includes("-") || option.includes(".")) {
 				option = option.replace(/[-.](\w)/g, (_, char) => char.toUpperCase());
 			}

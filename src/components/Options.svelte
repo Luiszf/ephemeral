@@ -1,8 +1,6 @@
 <script>
-	const options = {
+	let options = {
 		publicIp: "179.178.206.56",
-		"#Minecraft server properties":
-			"#Fri Apr 25 02:49:43 GMT-03:00 2025",
 		acceptsTransfers: false,
 		allowFlight: false,
 		allowNether: true,
@@ -65,17 +63,65 @@
 		viewDistance: 10,
 		whiteList: false,
 	};
+
+	const sort = (opt) => {
+		const booleans = {};
+		const numbers = {};
+		const strings = {};
+		const others = {};
+
+		for (const key in opt) {
+			if (opt.hasOwnProperty(key)) {
+				const value = opt[key];
+				const type = typeof value;
+
+				if (type === "boolean") {
+					booleans[key] = value;
+				} else if (type === "number") {
+					numbers[key] = value;
+				} else if (type === "string") {
+					strings[key] = value;
+				} else {
+					others[key] = value;
+				}
+			}
+		}
+
+		return { ...booleans, ...numbers, ...strings, ...others };
+	};
+
+	options = sort(options);
 </script>
 
 <div id="menu">
-	for
-	<div id="option">
-		<div id="option_name">option</div>
-		<label class="switch">
-			<input type="checkbox" />
-			<span class="slider round"></span>
-		</label>
-	</div>
+	{#each Object.entries(options) as [option, value], index}
+		{#if typeof value == "boolean"}
+			<div id="option">
+				<div id="option_name">{option}</div>
+				<label class="switch">
+					<input
+						type="checkbox"
+						checked={value}
+					/>
+					<span class="slider round"></span>
+				</label>
+			</div>
+		{/if}
+
+		{#if typeof value == "string"}
+			<div id="option">
+				<div id="option_name">{option}</div>
+				<input type="text" {value} />
+			</div>
+		{/if}
+
+		{#if typeof value == "number"}
+			<div id="option">
+				<div id="option_name">{option}</div>
+				<input type="number" {value} />
+			</div>
+		{/if}
+	{/each}
 </div>
 
 <style>
@@ -85,13 +131,12 @@
 	}
 	#option {
 		display: flex;
-		justify-items: center;
+		justify-content: space-between;
 		padding: 12px;
 	}
 	#menu {
-		display: flex;
+		display: grid;
 		padding: 24px;
-		flex-direction: column;
 		background-color: #202020;
 		border-radius: 8px;
 		margin-top: 24px;
