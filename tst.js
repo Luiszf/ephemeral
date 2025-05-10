@@ -8,6 +8,7 @@ function delay(ms) {
 
 const state = {
 	publicIp: "0.0.0.0",
+	options: {},
 }
 
 const options = {
@@ -16,7 +17,6 @@ const options = {
 	path: '/',
 	method: 'GET'
 };
-
 const req = https.request(options, res => {
 	console.log(`statusCode: ${res.statusCode}`);
 
@@ -37,14 +37,37 @@ req.on('error', error => {
 req.end();
 
 fs.readFile('servidor/server.properties', 'utf8', (err, data) => {
-	const split = data.split(/[\n,=]/)
+	decode(data)
+})
 
+function encode() {
+	let content = "";
+	for (const option in state.options) {
+		let formatedOpt = option.replace(/[_]/g, ".");
+		formatedOpt = formatedOpt.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+		content += formatedOpt
+		content += "="
+		content += state.options[option]
+		content += "\n"
+	}
+
+	fs.writeFile("./options.txt", content, err => { if (err) { console.error(err) } })
+}
+
+function decode(data) {
+	const split = data.split(/[\n,=]/)
 	for (let i = 0; i < split.length; i += 2) {
 		if (i + 1 < split.length) {
 
 			let option = split[i]
-			if (option.includes("-") || option.includes(".")) {
-				option = option.replace(/[-.](\w)/g, (_, char) => char.toUpperCase());
+			if (option[0] == "#") {
+				continue
+			}
+			if (option.includes("-")) {
+				option = option.replace(/[-](\w)/g, (_, char) => char.toUpperCase());
+			}
+			if (option.includes(".")) {
+				option = option.replace(/[.]/g, "_");
 			}
 
 			let value = split[i + 1];
@@ -56,10 +79,11 @@ fs.readFile('servidor/server.properties', 'utf8', (err, data) => {
 				value = false;
 			}
 
-			state[option] = value
+			state.options[option] = value
 		}
 	}
-})
+}
 
 await delay(2000)
 console.log(state)
+encode(state)

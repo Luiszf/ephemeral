@@ -8,6 +8,7 @@ let state = {
 	att: "1.21.5",
 	version: "Vanilla",
 	status: "Offline",
+	options: {},
 };
 
 const options = {
@@ -37,8 +38,25 @@ req.on('error', error => {
 req.end();
 
 fs.readFile('servidor/server.properties', 'utf8', (err, data) => {
-	const split = data.split(/[\n,=]/)
+	decode(data)
+})
 
+function encode(path: String) {
+	let content = "";
+	for (const option in state.options) {
+		let formatedOpt = option.replace(/[_]/g, ".");
+		formatedOpt = formatedOpt.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+		content += formatedOpt
+		content += "="
+		content += state.options[option]
+		content += "\n"
+	}
+
+	fs.writeFile(path, content, err => { if (err) { console.error(err) } })
+}
+
+function decode(data) {
+	const split = data.split(/[\n,=]/)
 	for (let i = 0; i < split.length; i += 2) {
 		if (i + 1 < split.length) {
 
@@ -46,8 +64,11 @@ fs.readFile('servidor/server.properties', 'utf8', (err, data) => {
 			if (option[0] == "#") {
 				continue
 			}
-			if (option.includes("-") || option.includes(".")) {
-				option = option.replace(/[-.](\w)/g, (_, char) => char.toUpperCase());
+			if (option.includes("-")) {
+				option = option.replace(/[-](\w)/g, (_, char) => char.toUpperCase());
+			}
+			if (option.includes(".")) {
+				option = option.replace(/[.]/g, "_");
 			}
 
 			let value = split[i + 1];
@@ -59,10 +80,10 @@ fs.readFile('servidor/server.properties', 'utf8', (err, data) => {
 				value = false;
 			}
 
-			state[option] = value
+			state.options[option] = value
 		}
 	}
-})
+}
 
 
 export const server = {
@@ -100,5 +121,11 @@ export const server = {
 		handler: async () => {
 			return state
 		}
+	}),
+	changeOptions: defineAction({
+		handler: async (input) => {
+			state.options = input;
+			encode("servidor/server.properties")
+		},
 	})
 }

@@ -1,6 +1,34 @@
 <script>
-	let options = {
-		publicIp: "179.178.206.56",
+	import { actions } from "astro:actions";
+
+	const sort = (opt) => {
+		return opt;
+
+		const booleans = {};
+		const numbers = {};
+		const strings = {};
+		const others = {};
+
+		for (const key in opt) {
+			if (opt.hasOwnProperty(key)) {
+				const value = opt[key];
+				const type = typeof value;
+
+				if (type === "boolean") {
+					booleans[key] = value;
+				} else if (type === "number") {
+					numbers[key] = value;
+				} else if (type === "string") {
+					strings[key] = value;
+				} else {
+					others[key] = value;
+				}
+			}
+		}
+
+		return { ...booleans, ...numbers, ...strings, ...others };
+	};
+	let options = sort({
 		acceptsTransfers: false,
 		allowFlight: false,
 		allowNether: true,
@@ -41,10 +69,10 @@
 		playerIdleTimeout: 0,
 		preventProxyConnections: false,
 		pvp: true,
-		queryPort: 42069,
+		query_port: 42069,
 		rateLimit: 0,
-		rconPassword: "qualquercoisa",
-		rconPort: 25575,
+		rcon_password: "qualquercoisa",
+		rcon_port: 25575,
 		regionFileCompression: "deflate",
 		requireResourcePack: false,
 		resourcePack: "",
@@ -62,38 +90,15 @@
 		useNativeTransport: true,
 		viewDistance: 10,
 		whiteList: false,
+	});
+
+	const changeOpt = async () => {
+		await actions.changeOptions(options);
 	};
-
-	const sort = (opt) => {
-		const booleans = {};
-		const numbers = {};
-		const strings = {};
-		const others = {};
-
-		for (const key in opt) {
-			if (opt.hasOwnProperty(key)) {
-				const value = opt[key];
-				const type = typeof value;
-
-				if (type === "boolean") {
-					booleans[key] = value;
-				} else if (type === "number") {
-					numbers[key] = value;
-				} else if (type === "string") {
-					strings[key] = value;
-				} else {
-					others[key] = value;
-				}
-			}
-		}
-
-		return { ...booleans, ...numbers, ...strings, ...others };
-	};
-
-	options = sort(options);
 </script>
 
 <div id="menu">
+	<button onclick={changeOpt}>Save</button>
 	{#each Object.entries(options) as [option, value], index}
 		{#if typeof value == "boolean"}
 			<div id="option">
@@ -102,6 +107,10 @@
 					<input
 						type="checkbox"
 						checked={value}
+						onchange={(e) => {
+							options[option] =
+								e.target.checked;
+						}}
 					/>
 					<span class="slider round"></span>
 				</label>
@@ -111,14 +120,28 @@
 		{#if typeof value == "string"}
 			<div id="option">
 				<div id="option_name">{option}</div>
-				<input type="text" {value} />
+				<input
+					type="text"
+					{value}
+					onchange={(e) => {
+						options[option] =
+							e.target.value;
+					}}
+				/>
 			</div>
 		{/if}
 
 		{#if typeof value == "number"}
 			<div id="option">
 				<div id="option_name">{option}</div>
-				<input type="number" {value} />
+				<input
+					type="number"
+					{value}
+					onchange={(e) => {
+						options[option] =
+							e.target.value;
+					}}
+				/>
 			</div>
 		{/if}
 	{/each}
