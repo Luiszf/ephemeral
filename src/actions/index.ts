@@ -86,6 +86,22 @@ function decode(data) {
 }
 
 
+
+//TODO: do the fs operations async with callbacks
+function worldBackup() {
+    const date = new Date()
+
+    // format to count with the timezone
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+    const fileName = `./backups/${date.toJSON()}`
+    console.log(fileName)
+    function callback(err) {
+        if (err) throw err;
+        console.log('backup made successfully');
+    }
+    fs.cpSync("./servidor/world", fileName, { recursive:true } , callback)
+}
+
 export const server = {
 	start: defineAction({
 		handler: async () => {
@@ -122,6 +138,48 @@ export const server = {
 			return state
 		}
 	}),
+    deleteBackup: defineAction({
+        handler:async (backupName: String) => {
+            fs.rm(`./backups/${backupName}`, {recursive: true} , (err) => {
+                if (err) throw err
+                console.log(`backup ${backupName} was deleted sucessufully`)
+            })
+        }
+    }),
+    restoreBackup: defineAction({
+        handler:async (backupName: String) => {
+            worldBackup()
+            if (state.status == "Offline") { 
+                fs.rmSync(`./servidor/world`, {recursive: true} , (err) => {
+                    if (err) throw err
+                        console.log(`world was deleted sucessufully`)
+                })
+            } else {
+                console.log(`Can not delete the world file while server in online`)
+            }
+            fs.cpSync(`./backups/${backupName}`, `./servidor/world/` , { recursive:true } , (err) => {
+                if (err) throw err
+                console.log(`backupo was restored sucessufully`)
+            })
+        }
+    }),
+    getBackups: defineAction({
+		handler: async () => {
+            let f = [];
+            fs.readdirSync("./backups/").forEach(file => {
+                f.push(file)
+            });
+            f.reverse()
+            console.log(f)
+
+            return f
+		}
+	}),
+    backup: defineAction({
+        handler: async () => {
+            worldBackup()
+        }
+    }),
 	changeOptions: defineAction({
 		handler: async (input) => {
 			state.options = input;

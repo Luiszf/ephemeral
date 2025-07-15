@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BackupList from '../components/BackupList.svelte';
+import SideBar from '../layouts/SideBar.astro';
+---
+
+<Layout>
+    <SideBar>
+        <BackupList client:only/>
+    </SideBar>
+</Layout>
+

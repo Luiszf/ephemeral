@@ -1,0 +1,62 @@
+---
+let routes = ["backups", "options", "panel"] 
+
+---
+
+<div class="flex">
+    <div id="sideMenu">
+    {routes.map((route) => (
+        <a id="refs" href={route}>
+            <div id="menuItem">
+                {route}
+            </div>
+        </a>
+        ))}
+    </div>
+    <div id="spacer"></div>
+    <div id="page">
+        <slot />
+    </div>
+</div>
+
+
+<style>
+
+    #refs:link,
+#refs:visited {
+    color: #eeeeee;
+    text-decoration: none;
+}
+#spacer {
+    width: 0.1rem;
+    background-color: #eeeeee;
+}
+#page {
+    margin: auto;
+    background-color: #181818;
+}
+.flex {
+    display: flex;
+    background-color: #181818;
+    border-radius: 1rem;
+}
+#sideMenu {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    margin: 1rem;
+    background-color: #181818;
+    border-width: 0.25rem;
+    border-color: #EEEEEE;
+}
+#menuItem {
+    background-color: #181818;
+    padding: 0.5rem;
+}
+#menuItem:hover {
+    background-color: #242424;
+}
+
+
+
+</style>

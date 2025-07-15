@@ -3,6 +3,7 @@
 
 	let logs = $state();
 	let state = $state({});
+	let options = $state({});
 	let consoleText = $state("");
 
 	$effect(() => {
@@ -27,76 +28,78 @@
 	};
 	const toClipboard = () => {
 		navigator.clipboard.writeText(
-			state.publicIp + ":" + state.serverPort,
+			state.publicIp + ":" + options.serverPort,
 		);
 	};
 
 	const getData = async () => {
 		const { data, error } = await actions.getInfo();
 		state = data;
-		console.log(state);
+		options = data.options;
 	};
 
 	getData();
 </script>
 
-<div id="menu">
-	<h2 id="title">{state.motd}</h2>
-	<div id="row">
-		<p>{state.publicIp}:{state.serverPort}</p>
-		<button
-			onclick={toClipboard}
-			style="background-color: #202020; border-width: 0px;"
-		>
-			<img
-				id="copy"
-				alt="copy ip to clipboad icon"
-				src="copy.svg"
-			/>
-		</button>
-	</div>
+<div id="controlPanel">
+    <div id="menu">
+        <h2 id="title">{options.motd}</h2>
+        <div id="row">
+            <p>{state.publicIp}:{options.serverPort}</p>
+            <button
+                onclick={toClipboard}
+                style="background-color: #202020; border-width: 0px;"
+            >
+                <img
+                    id="copy"
+                    alt="copy ip to clipboad icon"
+                    src="copy.svg"
+                />
+            </button>
+        </div>
 
-	<div id="row">
-		<p>{state.version}</p>
-		<p>{state.att}</p>
-	</div>
-	{#if state.status === "Online"}
-		<p id="online">{state.status}</p>
-	{/if}
-	{#if state.status === "Offline"}
-		<p id="offline">{state.status}</p>
-	{/if}
+        <div id="row">
+            <p>{state.version}</p>
+            <p>{state.att}</p>
+        </div>
+        {#if state.status === "Online"}
+            <p id="online">{state.status}</p>
+        {/if}
+        {#if state.status === "Offline"}
+            <p id="offline">{state.status}</p>
+        {/if}
 
-	{#if state.status === "Online"}
-		<button id="stop" onclick={stop}>stop</button>
-	{/if}
-	{#if state.status === "Offline"}
-		<button id="start" onclick={start}>start</button>
-	{/if}
-</div>
+        {#if state.status === "Online"}
+            <button id="stop" onclick={stop}>stop</button>
+        {/if}
+        {#if state.status === "Offline"}
+            <button id="start" onclick={start}>start</button>
+        {/if}
+    </div>
 
-<div id="menu">
-	<form
-		action=""
-		onsubmit={(e) => {
-			e.preventDefault();
-			if (consoleText.length == 0) return;
-			cmd();
-			consoleText = "";
-		}}
-	>
-		<textarea
-			bind:this={logs}
-			name=""
-			class="h-96"
-			id="console"
-			readonly="true"
-		>
-			{state.logs}
-		</textarea>
+    <div id="menu">
+        <form
+            action=""
+            onsubmit={(e) => {
+                e.preventDefault();
+                if (consoleText.length == 0) return;
+                cmd();
+                consoleText = "";
+            }}
+        >
+            <textarea
+                bind:this={logs}
+                name=""
+                class="h-96"
+                id="console"
+                readonly="true"
+            >
+                {state.logs}
+            </textarea>
 
-		<input type="text" id="console" bind:value={consoleText} />
-	</form>
+            <input type="text" id="console" bind:value={consoleText} />
+        </form>
+    </div>
 </div>
 
 <style>
