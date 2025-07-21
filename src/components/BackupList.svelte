@@ -1,26 +1,26 @@
 <script>
 import { actions } from "astro:actions";
-
+let { server } = $props();
 
 let backupList = $state([])
 
 const deleteBackup = async (backupName) => {
-		await actions.deleteBackup(backupName);
+		await actions.deleteBackup({name: server, backupName: backupName});
         await getBackups();
 };
 
 const restoreBackup = async (backupName) => {
-		await actions.restoreBackup(backupName);
+		await actions.restoreBackup({name: server, backupName: backupName});
         await getBackups();
 };
 
 const backup = async () => {
-		await actions.backup();
+		await actions.backup(server);
         await getBackups();
 };
 
 const getBackups = async () => {
-		const { data, err } = await actions.getBackups();
+		const { data, err } = await actions.getBackups(server);
         backupList = data
 };
 

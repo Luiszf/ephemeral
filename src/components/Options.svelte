@@ -1,6 +1,9 @@
 <script>
 	import { actions } from "astro:actions";
 
+    let { server } = $props()
+    let options = $state({})
+
 	const sort = (opt) => {
 		return opt;
 
@@ -28,73 +31,16 @@
 
 		return { ...booleans, ...numbers, ...strings, ...others };
 	};
-	let options = sort({
-		acceptsTransfers: false,
-		allowFlight: false,
-		allowNether: true,
-		broadcastConsoleToOps: true,
-		broadcastRconToOps: true,
-		bugReportLink: "",
-		difficulty: "hard",
-		enableCommandBlock: false,
-		enableJmxMonitoring: false,
-		enableQuery: false,
-		enableRcon: true,
-		enableStatus: true,
-		enforceSecureProfile: true,
-		enforceWhitelist: false,
-		entityBroadcastRangePercentage: 100,
-		forceGamemode: false,
-		functionPermissionLevel: 2,
-		gamemode: "survival",
-		generateStructures: true,
-		generatorSettings: "{}",
-		hardcore: false,
-		hideOnlinePlayers: true,
-		initialDisabledPacks: "",
-		initialEnabledPacks: "vanilla",
-		levelName: "world",
-		levelSeed: "",
-		levelType: "minecraft\\:normal",
-		logIps: true,
-		maxChainedNeighborUpdates: 1000000,
-		maxPlayers: 20,
-		maxTickTime: 60000,
-		maxWorldSize: 29999984,
-		motd: "A Minecraft Server",
-		networkCompressionThreshold: 256,
-		onlineMode: false,
-		opPermissionLevel: 4,
-		pauseWhenEmptySeconds: 60,
-		playerIdleTimeout: 0,
-		preventProxyConnections: false,
-		pvp: true,
-		query_port: 42069,
-		rateLimit: 0,
-		rcon_password: "qualquercoisa",
-		rcon_port: 25575,
-		regionFileCompression: "deflate",
-		requireResourcePack: false,
-		resourcePack: "",
-		resourcePackId: "",
-		resourcePackPrompt: "",
-		resourcePackSha1: "",
-		serverIp: "",
-		serverPort: 42069,
-		simulationDistance: 10,
-		spawnMonsters: true,
-		spawnProtection: 16,
-		syncChunkWrites: true,
-		textFilteringConfig: "",
-		textFilteringVersion: 0,
-		useNativeTransport: true,
-		viewDistance: 10,
-		whiteList: false,
-	});
-
-	const changeOpt = async () => {
-		await actions.changeOptions(options);
-	};
+	
+    const changeOpt = async () => {
+        await actions.changeOptions({name: server, options: JSON.stringify(options)});
+    };
+    const getOpt = async () => {
+        const {data, err}  = await actions.getOptions(server);
+        options = sort(data);
+    };
+    
+    getOpt()
 </script>
 
 <div id="menu">

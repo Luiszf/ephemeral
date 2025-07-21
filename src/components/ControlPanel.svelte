@@ -1,5 +1,6 @@
 <script>
 	import { actions } from "astro:actions";
+    let { server } = $props();
 
 	let logs = $state();
 	let state = $state({});
@@ -13,17 +14,17 @@
 	});
 
 	const start = async () => {
-		await actions.start();
+		await actions.start(server);
 		getData();
 	};
 
 	const stop = async () => {
-		await actions.stop();
+		await actions.stop(server);
 		setTimeout(getData, 1500);
 	};
 
 	const cmd = async () => {
-		await actions.cmd(consoleText);
+		await actions.cmd({name: server, cmd: consoleText});
 		setTimeout(getData, 1500);
 	};
 	const toClipboard = () => {
@@ -33,7 +34,7 @@
 	};
 
 	const getData = async () => {
-		const { data, error } = await actions.getInfo();
+		const { data, error } = await actions.getInfo(server);
 		state = data;
 		options = data.options;
 	};
@@ -53,7 +54,7 @@
                 <img
                     id="copy"
                     alt="copy ip to clipboad icon"
-                    src="copy.svg"
+                    src="/copy.svg"
                 />
             </button>
         </div>
