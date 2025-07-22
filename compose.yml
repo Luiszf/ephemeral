@@ -1,5 +1,0 @@
-services:
-  web:
-    image: "node:slim"
-    working_dir: "/home/luis/dev/ephemeral/"
-

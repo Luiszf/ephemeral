@@ -15,7 +15,7 @@ COPY astro.config.mjs astro.config.mjs
 RUN npm i 
 RUN npm run build
 
-EXPOSE 4321
+EXPOSE 4444
 
 CMD ["node", "dist/server/entry.mjs"]
 

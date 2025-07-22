@@ -11,7 +11,7 @@ export default defineConfig({
         enabled: false
     },
     integrations: [svelte()],
-    server: { port: 1234, host: true},
+    server: { port: 4444, host: true},
     adapter: node({
         mode: 'standalone',
     })
