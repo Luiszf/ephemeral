@@ -231,9 +231,11 @@ export const server = {
 		handler: async (input) => {
 			const cmd = spawn(
                 'rcon', [
-                    '-a', 
-                    `127.0.0.1:${states[input].options.rcon_port}`,
+                    '-H', 
+                    'localhost',
                     '-p',
+                    `${states[input].options.rcon_port}`,
+                    '-P',
                     states[input].options.rcon_password,
                     'stop'
                 ],
@@ -254,9 +256,11 @@ export const server = {
 		handler: async (input) => {
             const cmd = spawn(
                 'rcon', [
-                    '-a', 
-                    `127.0.0.1:${states[input.name].options.rcon_port}`,
+                    '-H', 
+                    'localhost',
                     '-p',
+                    `${states[input.name].options.rcon_port}`,
+                    '-P',
                     states[input.name].options.rcon_password,
                     input.cmd 
                 ],

@@ -12,6 +12,8 @@ COPY public/ public/
 COPY package.json package.json
 COPY astro.config.mjs astro.config.mjs
 
+VOLUME servers/
+
 RUN npm i 
 RUN npm run build
 
