@@ -27,10 +27,8 @@
 		await actions.cmd({name: server, cmd: consoleText});
 		setTimeout(getData, 1500);
 	};
-	const toClipboard = () => {
-		navigator.clipboard.writeText(
-			state.publicIp + ":" + options.serverPort,
-		);
+	const toClipboard = (text) => {
+		navigator.clipboard.writeText(text);
 	};
 
 	const getData = async () => {
@@ -46,9 +44,24 @@
     <div id="menu">
         <h2 id="title">{options.motd}</h2>
         <div id="row">
+            <p>public</p>
             <p>{state.publicIp}:{options.serverPort}</p>
             <button
-                onclick={toClipboard}
+                onclick={toClipboard(`${state.publicIp}:${options.serverPort}`)}
+                style="background-color: #202020; border-width: 0px;"
+            >
+                <img
+                    id="copy"
+                    alt="copy ip to clipboad icon"
+                    src="/copy.svg"
+                />
+            </button>
+        </div>
+        <div id="row">
+            <p>local</p>
+            <p>{state.localIp}:{options.serverPort}</p>
+            <button
+                onclick={toClipboard(`${state.localIp}:${options.serverPort}`)}
                 style="background-color: #202020; border-width: 0px;"
             >
                 <img

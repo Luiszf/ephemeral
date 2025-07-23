@@ -4,6 +4,7 @@ import https from "node:https";
 import fs from "node:fs";
 import { z } from "astro:schema";
 import { gVersions } from "./versions.ts";
+import os from 'node:os';
 
 const v = gVersions();
 
@@ -25,6 +26,7 @@ try {
 }
 
 let publicIp = "0.0.0.0"
+let localIp = ""
 
 const options = {
 	hostname: 'ifconfig.me', port: 443,
@@ -32,6 +34,21 @@ const options = {
 	path: '/',
 	method: 'GET'
 };
+
+let netInter = os.networkInterfaces()
+Object.keys(netInter).forEach(inter => {
+  // Filter out non-internal IPv4 addresses
+  const device = netInter[inter].find(
+    address => {
+        return !address.internal && address.family === 'IPv4'
+    }
+  );
+
+  if (device) {
+      localIp = device.address
+  }
+});
+
 
 
 const req = https.request(options, res => {
@@ -287,6 +304,7 @@ export const server = {
                 });
             });
             states[input].publicIp = publicIp
+            states[input].localIp = localIp 
             return states[input]
         }
 	}),
