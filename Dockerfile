@@ -1,4 +1,4 @@
-FROM node:24.4-alpine3.21
+FROM docker.io/node:24.4-alpine3.21
 
 RUN apk update
 RUN apk add openjdk21
