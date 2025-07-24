@@ -47,21 +47,7 @@
             <p>public</p>
             <p>{state.publicIp}:{options.serverPort}</p>
             <button
-                onclick={toClipboard(`${state.publicIp}:${options.serverPort}`)}
-                style="background-color: #202020; border-width: 0px;"
-            >
-                <img
-                    id="copy"
-                    alt="copy ip to clipboad icon"
-                    src="/copy.svg"
-                />
-            </button>
-        </div>
-        <div id="row">
-            <p>local</p>
-            <p>{state.localIp}:{options.serverPort}</p>
-            <button
-                onclick={toClipboard(`${state.localIp}:${options.serverPort}`)}
+                onclick={() => toClipboard(`${state.publicIp}:${options.serverPort}`)}
                 style="background-color: #202020; border-width: 0px;"
             >
                 <img
@@ -72,6 +58,22 @@
             </button>
         </div>
 
+        {#each state.localIp as ip}
+        <div id="row">
+            <p>local</p>
+            <p>{ip}:{options.serverPort}</p>
+            <button
+                onclick={() => toClipboard(`${ip}:${options.serverPort}`)}
+                style="background-color: #202020; border-width: 0px;"
+            >
+                <img
+                    id="copy"
+                    alt="copy ip to clipboad icon"
+                    src="/copy.svg"
+                />
+            </button>
+        </div>
+        {/each }
         <div id="row">
             <p>{state.version}</p>
             <p>{state.att}</p>

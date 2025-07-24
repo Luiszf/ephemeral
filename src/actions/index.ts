@@ -26,7 +26,7 @@ try {
 }
 
 let publicIp = "0.0.0.0"
-let localIp = ""
+let localIp = [] 
 
 const options = {
 	hostname: 'ifconfig.me', port: 443,
@@ -45,7 +45,8 @@ Object.keys(netInter).forEach(inter => {
   );
 
   if (device) {
-      localIp = device.address
+      // local ip is a list because i could be various network devices
+      localIp.push(device.address)
   }
 });
 
@@ -292,6 +293,7 @@ export const server = {
 	getInfo: defineAction({
         input: z.string(),
         handler: async (input) => {
+            // BUG: sometimes socket hangs, probably is in here
             const req = https.request(options, res => {
                 console.log(`statusCode: ${res.statusCode}`);
                 res.on('data', d => {
